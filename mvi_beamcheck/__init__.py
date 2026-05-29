@@ -5,7 +5,7 @@ and BeamCheckResult directly from mvi_beamcheck.
 
 
 from .beamcheck import MVIBeamCheck
-from .calibration import BeamCheckCalibration
+from .configuration import BeamCheckConfiguration
 from .results import BeamCheckResult
 
-__all__ = ["MVIBeamCheck", "BeamCheckCalibration", "BeamCheckResult"]
+__all__ = ["MVIBeamCheck", "BeamCheckConfiguration", "BeamCheckResult"]
