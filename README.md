@@ -9,7 +9,10 @@ Work in progress.
 
 Example usage and configuration will be added.
 
-
 ## References:<br>
 1.  Hilgers et al. (2023) - https://doi.org/10.1016/j.phro.2023.100411
 2.  Hilgers et al. (2026) - https://doi.org/10.1016/j.phro.2026.100930
+
+## Disclaimer
+
+This software is intended for research and quality assurance purposes. It has not been validated as a medical device and is not intended to be used as the sole basis for decisions affecting clinical use of the system.
