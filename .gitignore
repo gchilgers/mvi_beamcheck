@@ -1,0 +1,26 @@
+# ---- OS files ----
+.DS_Store
+Thumbs.db
+
+# ---- Editor / IDE ----
+.vscode/
+.idea/
+
+# ---- Logs ----
+*.log
+
+# ---- Environment / secrets ----
+.env
+.env.*
+
+# ---- Build / output ----
+build/
+dist/
+
+# ---- Python ----
+__pycache__/
+*.pyc
+
+# ---- Virtual environments ----
+venv/
+.venv/
