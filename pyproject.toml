@@ -1,0 +1,16 @@
+[project]
+name = 'mvi-beamcheck'
+version = '0.0.1'
+requires-python = ">=3.11"
+
+dependencies = [
+    'pydicom>=2.4',
+    'numpy>=3.0'
+]
+
+[build-system]
+requires = ['setuptools']
+build-backend = 'setuptools.build_meta'
+
+[tool.setuptools.packages.find]
+where = ['src']
