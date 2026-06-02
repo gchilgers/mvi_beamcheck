@@ -27,3 +27,7 @@ venv/
 
 # ---- Pytest ----
 .pytest_cache/
+
+# Python packaging
+*.egg-info/
+*.egg-info

@@ -4,8 +4,8 @@ version = '0.0.1'
 requires-python = ">=3.11"
 
 dependencies = [
-    'pydicom>=2.4',
-    'numpy>=3.0'
+    'pydicom>=3.0',
+    'numpy>=2.4'
 ]
 
 [build-system]
