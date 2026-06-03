@@ -9,11 +9,11 @@ from datetime import datetime
 from pydicom import Dataset, dcmread
 
 # --- ROI definitions (fixed method specification) ---
-ROI_DEFINITIONS = {
+ROIS = {
     'output': {'offset_mm': (0, 0), 'size_px': (101, 101)},   
 }
 
-class MVIBeamCheck:
+class MVIBeamCheck():
     
 
     # --- construction / interface --- 
@@ -24,7 +24,7 @@ class MVIBeamCheck:
         self.timestamp = self._get_timestamp()
         self.response = self._compute_response()
         
-        self.output_response = self._measure_roi_response((0, 0), (101, 101))
+        self.output_response = self._measure_roi_response(ROIS['output']['offset_mm'], ROIS['output']['size_px'])
                 
     @classmethod
     def from_dcm(cls, path: Path, config: dict):
@@ -53,8 +53,8 @@ class MVIBeamCheck:
     # --- ROI definition ---
     def _roi_offset_to_px(self, roi_offset_mm: tuple[float, float]):
         # --- isocenter pixel vendor (x, y, 1-based) → internal (i, j, 0-based) ---
-#       iso_x_vendor_px, iso_y_vendor_px = self.config['system']['mean_isocenter_pixel']
-        iso_x_vendor_px, iso_y_vendor_px = (512.837, 650.785)
+        iso_x_vendor_px, iso_y_vendor_px = self.config['system']['imager']['mean_isocenter_pixel']
+    
         iso_i_px = int(iso_y_vendor_px - 1)
         iso_j_px = int(iso_x_vendor_px - 1)
     
