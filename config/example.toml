@@ -1,2 +1,8 @@
-                      
+[system.imager]
+mean_isocenter_pixel = [512.837, 650.785]
+
+[output]
+crosscal_response = 12345.0
+crosscal_output = 1.0
+reference_output = 1.0                      
 
