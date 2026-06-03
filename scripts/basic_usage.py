@@ -16,3 +16,8 @@ ds = dcmread(root / 'tests' / 'data' / 'rtimg_example_anon.dcm')
 # --- run analysis ---
 check = MVIBeamCheck(ds, config)
 
+# --- debugging / inspection ---
+print("\n[DEBUG] MVIBeamCheck inspection")
+print(f"Timestamp: {check.timestamp}")
+print(f"Output ROI response (mean): {check.output_response:.3f}")
+
