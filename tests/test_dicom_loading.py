@@ -1,9 +1,10 @@
 from pathlib import Path
 from pydicom import dcmread
 
-def test_dicom_can_be_loaded():
-    dcm_path = Path(__file__).parent / 'data' / 'rtimg_example_anon.dcm'
+def test_example_rtimage_can_be_loaded():
+    root = Path(__file__).resolve().parents[1]
+    path = root / 'tests' / 'data' / 'rtimg_example_anon.dcm'
     
-    ds = dcmread(dcm_path)
+    ds = dcmread(path)
 
     assert ds is not None
