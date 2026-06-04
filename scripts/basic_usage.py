@@ -20,4 +20,5 @@ check = MVIBeamCheck(ds, config)
 print("\n[DEBUG] MVIBeamCheck inspection")
 print(f"Timestamp: {check.timestamp}")
 print(f"Output ROI response (mean): {check.output_response:.3f}")
+print(f"Output deviation (%): {check.output_deviation:.1f}")
 

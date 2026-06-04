@@ -25,6 +25,7 @@ class MVIBeamCheck():
         self.response = self._compute_response()
         
         self.output_response = self._measure_roi_response(ROIS['output']['offset_mm'], ROIS['output']['size_px'])
+        self.output_deviation = self._compute_output_deviation()
                 
     @classmethod
     def from_dcm(cls, path: Path, config: dict):
@@ -100,3 +101,10 @@ class MVIBeamCheck():
     def _measure_roi_response(self, roi_offset_mm: tuple[float, float], roi_size_px: tuple[int, int]):
         roi = self._create_roi(roi_offset_mm, roi_size_px)
         return np.mean(self._extract_roi(roi))
+    
+    def _compute_output_deviation(self):
+        crosscal_response = self.config['output']['crosscal_response']
+        crosscal_output = self.config['output']['crosscal_output']
+        output = self.output_response / crosscal_response * crosscal_output
+        target_output = self.config['output']['target_output']
+        return (output - target_output) / target_output * 100
