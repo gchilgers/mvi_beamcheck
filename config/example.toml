@@ -2,12 +2,11 @@
 mean_isocenter_pixel = [512.837, 650.785]
 
 [output]
-crosscal_response = 2297167       
+crosscal_response = 2280231       
 # panel response in output ROI during cross calibration (-)
 
-crosscal_output = 1.0
+crosscal_output = 1.005965
 # output measured in water during cross calibration (cGy/MU)
 
-target_output = 1.0               
+target_output = 1.000000               
 # target output (cGy/MU)
-
