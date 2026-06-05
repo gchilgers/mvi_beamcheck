@@ -1,1 +1,0 @@
-# ROI defines the pixel-space region used for measurement, derived from configuration and DICOM geometry at runtime.
