@@ -1,6 +1,6 @@
-"""
-Contains the BeamCheckResult dataclass that stores the final results.
-"""
+from dataclasses import dataclass
 
+@dataclass
 class BeamCheckResult:
-    pass
+    output_response: float
+    output_deviation: float

@@ -8,6 +8,8 @@ import numpy as np
 from datetime import datetime
 from pydicom import Dataset, dcmread
 
+from .results import BeamCheckResult
+
 # --- ROI definitions (fixed method specification) ---
 ROIS = {
     'output': {'offset_mm': (0, 0), 'size_px': (101, 101)},   
@@ -15,7 +17,6 @@ ROIS = {
 
 class MVIBeamCheck():
     
-
     # --- construction / interface --- 
     def __init__(self, rtimage: Dataset, config: dict):
         self.rtimage = rtimage
@@ -30,7 +31,6 @@ class MVIBeamCheck():
     @classmethod
     def from_dcm(cls, path: Path, config: dict):
         return cls(dcmread(path), config)
-
 
     # --- metadata / preprocessing ---
     def _get_timestamp(self):
@@ -108,3 +108,17 @@ class MVIBeamCheck():
         output = self.output_response / crosscal_response * crosscal_output
         target_output = self.config['output']['target_output']
         return (output - target_output) / target_output * 100
+    
+    # --- results / API ---
+    def result(self) -> BeamCheckResult:
+        return BeamCheckResult(
+            output_response = float(self.output_response),
+            output_deviation = float(self.output_deviation)
+    )
+
+    def __repr__(self):
+        return (
+            f"MVIBeamCheck("
+            f"output_response={self.output_response:.3f}, "
+            f"output_deviation={self.output_deviation:.2f}%)"
+    )

@@ -15,7 +15,15 @@ ds = dcmread(root / 'tests' / 'data' / 'rtimg_example_anon.dcm')
 
 # --- run analysis ---
 check = MVIBeamCheck(ds, config)
-print(f'Output ROI response: {check.output_response:.3f}')
-print(f'Output deviation (%): {check.output_deviation:.1f}')
+print(check)
+
+# --- direct access ---
+# print(f'Output response: {result.output_response:.3f}')
+# print(f'Output deviation (%): {result.output_deviation:.1f}')
+
+# --- result interface ---
+result = check.result()
+print(result)
+
 
 
