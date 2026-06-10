@@ -1,6 +1,6 @@
 """
 Contains the main computational class MVIBeamCheck. This class reads the DICOM 
-image (via from_dicom), calls the image processing helpers, computes output and 
+image (via from_rtimage), calls the image processing helpers, computes output and 
 beam quality deviations, and returns a BeamCheckResult.
 """
 from pathlib import Path
@@ -29,22 +29,34 @@ class MVIBeamCheck():
         self.output_deviation = self._compute_output_deviation()
                 
     @classmethod
-    def from_dcm(cls, path: Path, config: dict):
+    def from_rtimage(cls, path: Path, config: dict):
         return cls(dcmread(path), config)
 
     # --- metadata / preprocessing ---
     def _get_timestamp(self):
-        date_as_str = self.rtimage.AcquisitionDate
-        time_as_str = self.rtimage.AcquisitionTime
-        timestamp_as_str = (date_as_str + time_as_str).replace('.', '')
+        acquisition_date = getattr(self.rtimage, 'AcquisitionDate', None)
+        if acquisition_date is None:
+            raise ValueError('Missing AcquisitionDate (required for timestamp)')
+        acquisition_date = str(acquisition_date)
+
+        acquisition_time = getattr(self.rtimage, 'AcquisitionTime', None)
+        if acquisition_time is None:
+            raise ValueError('Missing AcquisitionTime (required for timestamp)')
+        acquisition_time = str(acquisition_time)
+
+        timestamp_as_str = (acquisition_date + acquisition_time).replace('.', '')
+
         return datetime.strptime(timestamp_as_str, '%Y%m%d%H%M%S%f')
 
     def _compute_response(self):
         pixel_array = self.rtimage.pixel_array
-        pixel_factor = float(self.rtimage[0x0021, 0x1002].value)
+
+        tag = self.rtimage.get((0x0021, 0x1002))
+        if tag is None:
+            raise ValueError('Missing pixel factor (required for response computation)')
+        pixel_factor = float(tag.value)
 
         response = (2**16 - 1 - pixel_array) / pixel_factor
-
 
         # exclude saturated pixels (vendor-applied mask)
         response[pixel_array == (2**16 - 1)] = np.nan
@@ -60,18 +72,29 @@ class MVIBeamCheck():
         iso_j_px = int(iso_x_vendor_px - 1)
     
         # --- pixel spacing (mm per pixel) ---
-        spacing_i_mm_per_px, spacing_j_mm_per_px = self.rtimage.ImagePlanePixelSpacing
-    
+        pixel_spacing = getattr(self.rtimage, 'ImagePlanePixelSpacing', None)
+        if pixel_spacing is None:
+            raise ValueError('Missing ImagePlanePixelSpacing (required for ROI computation)')
+        pixel_spacing_i = float(pixel_spacing[0])
+        pixel_spacing_j = float(pixel_spacing[1])
+
         # --- geometry ---
-        SID_mm = float(self.rtimage.RTImageSID)  # source-to-imager distance
-        SAD_mm = float(self.rtimage.RadiationMachineSAD)  # source-to-axis distance
+        SID_mm = getattr(self.rtimage, 'RTImageSID', None)  # source-to-imager distance
+        if SID_mm is None:
+            raise ValueError('Missing RTImageSID (required for ROI computation)')
+        SID_mm = float(SID_mm)
+
+        SAD_mm = getattr(self.rtimage, 'RadiationMachineSAD', None)  # source-to-axis distance
+        if SAD_mm is None:
+            raise ValueError('Missing RadiationMachineSAD (required for ROI computation)')
+        SAD_mm = float(SAD_mm)
     
         # --- offsets (mm) ---
         offset_i_mm, offset_j_mm = roi_offset_mm
     
         # --- convert mm → pixels  ---
-        offset_i_px = int((offset_i_mm * (SID_mm / SAD_mm)) / spacing_i_mm_per_px)
-        offset_j_px = int((offset_j_mm * (SID_mm / SAD_mm)) / spacing_j_mm_per_px)
+        offset_i_px = int((offset_i_mm * (SID_mm / SAD_mm)) / pixel_spacing_i)
+        offset_j_px = int((offset_j_mm * (SID_mm / SAD_mm)) / pixel_spacing_j)
     
         # --- ROI center in px ---
         roi_center_i_px = iso_i_px + offset_i_px
