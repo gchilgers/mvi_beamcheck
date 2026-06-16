@@ -128,8 +128,12 @@ class MVIBeamCheck():
     def _compute_output_deviation(self):
         crosscal_response = self.config['output']['crosscal_response']
         crosscal_output = self.config['output']['crosscal_output']
-        output = self.output_response / crosscal_response * crosscal_output
         target_output = self.config['output']['target_output']
+        return self._output_deviation_formula(self.output_response, crosscal_response, crosscal_output, target_output)
+
+    @staticmethod
+    def _output_deviation_formula(output_response, crosscal_response, crosscal_output, target_output):
+        output = output_response / crosscal_response * crosscal_output
         return (output - target_output) / target_output * 100
     
     # --- results / API ---
