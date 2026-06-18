@@ -141,9 +141,10 @@ class MVIBeamCheck():
     )
 
     def __repr__(self):
+        result = self.result()
         return (
             f'MVIBeamCheck('
-            f'timestamp={self.timestamp.isoformat()}, '
-            f'output_response={self.output_response:.3f}, '
-            f'output_deviation={self.output_deviation:.2f}%)'
+            f'timestamp={result.timestamp.isoformat()}, '
+            f'output_response={result.output_response:.3f}, '
+            f'output_deviation={result.output_deviation:.2f}%)'
     )
