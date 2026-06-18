@@ -18,7 +18,7 @@ ROIS = {
 class MVIBeamCheck():
     
     # --- construction / interface --- 
-    def __init__(self, rtimage: Dataset, config: dict):
+    def __init__(self, rtimage: Dataset, config: dict) -> None:
         self.rtimage = rtimage
         self.config = config
         
@@ -29,11 +29,11 @@ class MVIBeamCheck():
         self.output_deviation = self._compute_output_deviation()
                 
     @classmethod
-    def from_rtimage(cls, path: Path, config: dict):
+    def from_rtimage(cls, path: Path, config: dict) -> 'MVIBeamCheck':
         return cls(dcmread(path), config)
 
     # --- metadata / preprocessing ---
-    def _get_timestamp(self):
+    def _get_timestamp(self) -> datetime:
         acquisition_date = getattr(self.rtimage, 'AcquisitionDate', None)
         if acquisition_date is None:
             raise ValueError('Missing AcquisitionDate (required for timestamp)')
@@ -48,7 +48,7 @@ class MVIBeamCheck():
 
         return datetime.strptime(timestamp_as_str, '%Y%m%d%H%M%S%f')
 
-    def _compute_response(self):
+    def _compute_response(self) -> np.ndarray:
         pixel_array = self.rtimage.pixel_array
 
         tag = self.rtimage.get((0x0021, 0x1002))
@@ -64,7 +64,7 @@ class MVIBeamCheck():
         return response
 
     # --- ROI definition ---
-    def _roi_offset_to_px(self, roi_offset_mm: tuple[float, float]):
+    def _roi_offset_to_px(self, roi_offset_mm: tuple[float, float]) -> tuple[int, int]:
         # --- isocenter pixel vendor (x, y, 1-based) → internal (i, j, 0-based) ---
         iso_x_vendor_px, iso_y_vendor_px = self.config['system']['imager']['mean_isocenter_pixel']
     
@@ -102,7 +102,7 @@ class MVIBeamCheck():
     
         return (roi_center_i_px, roi_center_j_px)
     
-    def _create_roi(self, roi_offset_mm: tuple[float, float], roi_size_px: tuple[int, int]):
+    def _create_roi(self, roi_offset_mm: tuple[float, float], roi_size_px: tuple[int, int]) -> tuple[slice, slice]:
         # --- center position in pixels ---
         center_i, center_j = self._roi_offset_to_px(roi_offset_mm)
     
@@ -118,21 +118,21 @@ class MVIBeamCheck():
         return (slice_i, slice_j)  
     
     # --- extraction / measurement ---
-    def _extract_roi(self, roi):
+    def _extract_roi(self, roi: tuple[slice, slice]) -> np.ndarray:
         return self.response[roi]
       
-    def _measure_roi_response(self, roi_offset_mm: tuple[float, float], roi_size_px: tuple[int, int]):
+    def _measure_roi_response(self, roi_offset_mm: tuple[float, float], roi_size_px: tuple[int, int]) -> float:
         roi = self._create_roi(roi_offset_mm, roi_size_px)
         return np.mean(self._extract_roi(roi))
     
-    def _compute_output_deviation(self):
+    def _compute_output_deviation(self) -> float:
         crosscal_response = self.config['output']['crosscal_response']
         crosscal_output = self.config['output']['crosscal_output']
         target_output = self.config['output']['target_output']
         return self._output_deviation_formula(self.output_response, crosscal_response, crosscal_output, target_output)
 
     @staticmethod
-    def _output_deviation_formula(output_response, crosscal_response, crosscal_output, target_output):
+    def _output_deviation_formula(output_response: float, crosscal_response: float, crosscal_output: float, target_output: float) -> float:
         output = output_response / crosscal_response * crosscal_output
         return (output - target_output) / target_output * 100
     
