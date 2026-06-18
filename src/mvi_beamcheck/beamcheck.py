@@ -10,6 +10,7 @@ from pydicom import Dataset, dcmread
 
 from .config import BeamCheckConfig
 from .results import BeamCheckResult
+from .formulas import compute_output_deviation
 
 # --- ROI definitions (fixed method specification) ---
 ROIS = {
@@ -129,13 +130,8 @@ class MVIBeamCheck():
         crosscal_response = self.config.output.crosscal_response
         crosscal_output = self.config.output.crosscal_output
         target_output = self.config.output.target_output
-        return self._output_deviation_formula(self.output_response, crosscal_response, crosscal_output, target_output)
+        return compute_output_deviation(self.output_response, crosscal_response, crosscal_output, target_output)
 
-    @staticmethod
-    def _output_deviation_formula(output_response: float, crosscal_response: float, crosscal_output: float, target_output: float) -> float:
-        output = output_response / crosscal_response * crosscal_output
-        return (output - target_output) / target_output * 100
-    
     # --- results / API ---
     def result(self) -> BeamCheckResult:
         return BeamCheckResult(

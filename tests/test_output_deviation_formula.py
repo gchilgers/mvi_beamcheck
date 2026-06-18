@@ -1,8 +1,8 @@
 import numpy as np
-from mvi_beamcheck import MVIBeamCheck
+from mvi_beamcheck.formulas import compute_output_deviation
 
 def test_output_deviation_formula():
-    computed = MVIBeamCheck._output_deviation_formula(
+    computed = compute_output_deviation(
         2274423.1626736,    # output_response
         2280231,            # crosscal_response
         1.005965,           # crosscal_output
