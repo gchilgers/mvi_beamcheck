@@ -1,4 +1,4 @@
-[system.imager]
+[imager]
 mean_isocenter_pixel = [512.837, 650.785]
 
 [output]

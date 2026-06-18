@@ -8,6 +8,7 @@ import numpy as np
 from datetime import datetime
 from pydicom import Dataset, dcmread
 
+from .config import BeamCheckConfig
 from .results import BeamCheckResult
 
 # --- ROI definitions (fixed method specification) ---
@@ -20,7 +21,7 @@ class MVIBeamCheck():
     # --- construction / interface --- 
     def __init__(self, rtimage: Dataset, config: dict) -> None:
         self.rtimage = rtimage
-        self.config = config
+        self.config = BeamCheckConfig.from_dict(config)
         
         self.timestamp = self._get_timestamp()
         self.response = self._compute_response()
@@ -66,8 +67,7 @@ class MVIBeamCheck():
     # --- ROI definition ---
     def _roi_offset_to_px(self, roi_offset_mm: tuple[float, float]) -> tuple[int, int]:
         # --- isocenter pixel vendor (x, y, 1-based) → internal (i, j, 0-based) ---
-        iso_x_vendor_px, iso_y_vendor_px = self.config['system']['imager']['mean_isocenter_pixel']
-    
+        iso_x_vendor_px, iso_y_vendor_px = self.config.imager.mean_isocenter_pixel
         iso_i_px = int(iso_y_vendor_px - 1)
         iso_j_px = int(iso_x_vendor_px - 1)
     
@@ -126,9 +126,9 @@ class MVIBeamCheck():
         return np.mean(self._extract_roi(roi))
     
     def _compute_output_deviation(self) -> float:
-        crosscal_response = self.config['output']['crosscal_response']
-        crosscal_output = self.config['output']['crosscal_output']
-        target_output = self.config['output']['target_output']
+        crosscal_response = self.config.output.crosscal_response
+        crosscal_output = self.config.output.crosscal_output
+        target_output = self.config.output.target_output
         return self._output_deviation_formula(self.output_response, crosscal_response, crosscal_output, target_output)
 
     @staticmethod
