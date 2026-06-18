@@ -4,26 +4,23 @@ from pydicom import dcmread
 
 from mvi_beamcheck import MVIBeamCheck
 
+# --- locate project root ---
 root = Path(__file__).resolve().parents[1]
 
 # --- load config ---
 with open(root / 'config' / 'example.toml', 'rb') as f:
     config = tomllib.load(f)
 
-# --- load DICOM ---
+# --- load RTImage ---
 ds = dcmread(root / 'tests' / 'data' / 'rtimg_example_anon.dcm')
 
-# --- run analysis ---
+# --- run beam check ---
 check = MVIBeamCheck(ds, config)
-print(check)
 
-# --- direct access ---
-# print(f'Output response: {result.output_response:.3f}')
-# print(f'Output deviation (%): {result.output_deviation:.1f}')
-
-# --- result interface ---
+# --- retrieve results ---
 result = check.result()
-print(result)
 
-
-
+# --- print key outputs ---
+print('\nBeam check results:')
+print(f'Output response: {result.output_response:.1f}')
+print(f'Output deviation: {result.output_deviation:.2f} %')
