@@ -9,7 +9,7 @@ from datetime import datetime
 from pydicom import Dataset, dcmread
 
 from .config import BeamCheckConfig
-from .results import BeamCheckResult
+from .result import BeamCheckResult
 from .formulas import compute_output_deviation
 
 # --- ROI definitions (fixed method specification) ---
