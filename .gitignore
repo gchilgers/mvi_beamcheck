@@ -31,3 +31,6 @@ venv/
 # Python packaging
 *.egg-info/
 *.egg-info
+
+# Paper
+_paper/
