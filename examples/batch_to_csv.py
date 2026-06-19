@@ -1,3 +1,16 @@
+"""
+Example script: batch processing of RTImage DICOM files.
+
+Processes multiple RTImage datasets and exports results to CSV.
+
+Usage:
+    python batch_to_csv.py <data_dir>
+
+Notes:
+- The config file in /config is provided as an example.
+- Replace it with a system-specific configuration if needed.
+"""
+
 from pathlib import Path
 import sys
 import csv
@@ -5,9 +18,6 @@ import tomllib
 from pydicom import dcmread
 
 from mvi_beamcheck import MVIBeamCheck
-
-import mvi_beamcheck
-print(mvi_beamcheck.__file__)
 
 
 # --- locate project root ---

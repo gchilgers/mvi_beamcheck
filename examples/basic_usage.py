@@ -1,3 +1,13 @@
+"""
+Example script: basic usage of MVIBeamCheck for a single RTImage.
+
+Processes a single RTImage dataset and prints results to the console.
+
+Notes:
+- The config file in /config is provided as an example.
+- Replace it with a system-specific configuration if needed.
+"""
+
 from pathlib import Path
 import tomllib
 from pydicom import dcmread
