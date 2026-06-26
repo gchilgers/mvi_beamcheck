@@ -131,6 +131,9 @@ class MVIBeamCheck():
         crosscal_output = self.config.output.crosscal_output
         target_output = self.config.output.target_output
         return compute_output_deviation(self.output_response, crosscal_response, crosscal_output, target_output)
+    
+    def _compute_beam_quality_deviation(self) -> float:
+        raise NotImplementedError
 
     # --- results / API ---
     def result(self) -> BeamCheckResult:
