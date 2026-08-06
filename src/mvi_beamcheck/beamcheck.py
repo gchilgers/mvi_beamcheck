@@ -14,7 +14,12 @@ from .formulas import compute_output_deviation
 
 # --- ROI definitions (fixed method specification) ---
 ROIS = {
-    'output': {'offset_mm': (0, 0), 'size_px': (101, 101)},   
+    'output': {'offset_mm': (0, 0), 'size_px': (101, 101)},
+    'flat_cax': {'offset_mm': (0, 0), 'size_px': (47, 21)},
+    'flat_D1': {'offset_mm': (0.6*90, 0.6*40), 'size_px': (47, 21)},
+    'flat_D2': {'offset_mm': (-0.6*90, 0.6*40), 'size_px': (47, 21)},
+    'flat_D3': {'offset_mm': (-0.6*90, -0.6*40), 'size_px': (47, 21)},
+    'flat_D4': {'offset_mm': (0.6*90, -0.6*40), 'size_px': (47, 21)},
 }
 
 class MVIBeamCheck():
