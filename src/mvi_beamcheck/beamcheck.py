@@ -35,7 +35,7 @@ class MVIBeamCheck():
         self.output_response = self._measure_roi_response(ROIS['output']['offset_mm'], ROIS['output']['size_px'])
         self.output_deviation = self._compute_output_deviation()
 
-        self.flatness = self._measure_flatness()
+        self.flatness = self._compute_flatness()
         self.beam_quality_deviation = self._compute_beam_quality_deviation()
                 
     @classmethod
