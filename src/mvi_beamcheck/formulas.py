@@ -6,9 +6,8 @@ def compute_output_deviation(output_response: float, crosscal_response: float, c
     """
     output = output_response / crosscal_response * crosscal_output
     deviation = output - target_output
-    deviation_in_pct = deviation / target_output * 100
 
-    return deviation_in_pct
+    return ((output / target_output) - 1) * 100
 
 def compute_flatness(flatness_responses: dict) -> float:
     """ Compute diagonal normalized flatness.
@@ -23,9 +22,6 @@ def compute_flatness(flatness_responses: dict) -> float:
         for key in ('flat_D1', 'flat_D2', 'flat_D3', 'flat_D4')
     ]
 
-    flatness = sum(off_axis_responses) / (len(off_axis_responses) * cax_response)
-
-    return flatness
-
+    return sum(off_axis_responses) / (len(off_axis_responses) * cax_response)
 
 
