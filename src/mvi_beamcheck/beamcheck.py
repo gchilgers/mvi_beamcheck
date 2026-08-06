@@ -48,7 +48,7 @@ class MVIBeamCheck():
         self.timestamp = self._get_timestamp()
         self.response = self._compute_response()
         
-        self.output_response = self._measure_roi_response(OUTPUT_ROI['offset_mm'], OUTPUT_ROI['Output']['size_px'])
+        self.output_response = self._measure_roi_response(OUTPUT_ROI['offset_mm'], OUTPUT_ROI['size_px'])
         self.output_deviation = self._compute_output_deviation()
 
         self.flatness = self._compute_flatness()
