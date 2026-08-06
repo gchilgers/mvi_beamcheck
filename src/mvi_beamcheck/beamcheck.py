@@ -116,14 +116,14 @@ class MVIBeamCheck():
         SAD_mm = float(SAD_mm)
     
         # --- offsets (mm) ---
-        offset_i_mm, offset_j_mm = roi_offset_mm
+        offset_x_mm, offset_y_mm = roi_offset_mm
     
         # --- convert mm → pixels  ---
-        offset_i_px = int((offset_i_mm * (SID_mm / SAD_mm)) / pixel_spacing_i)
-        offset_j_px = int((offset_j_mm * (SID_mm / SAD_mm)) / pixel_spacing_j)
+        offset_i_px = int((offset_y_mm * (SID_mm / SAD_mm)) / pixel_spacing_i)
+        offset_j_px = int((offset_x_mm * (SID_mm / SAD_mm)) / pixel_spacing_j)
     
         # --- ROI center in px ---
-        roi_center_i_px = iso_i_px + offset_i_px
+        roi_center_i_px = iso_i_px - offset_i_px
         roi_center_j_px = iso_j_px + offset_j_px
     
         return (roi_center_i_px, roi_center_j_px)
@@ -133,10 +133,11 @@ class MVIBeamCheck():
         center_i, center_j = self._roi_offset_to_px(roi_offset_mm)
     
         # --- ROI size ---
-        size_i, size_j = roi_size_px
+        size_j, size_i = roi_size_px
+
         half_i = size_i // 2
         half_j = size_j // 2
-    
+      
         # --- construct slices ---
         slice_i = slice(center_i - half_i, center_i + half_i + 1)
         slice_j = slice(center_j - half_j, center_j + half_j + 1)
@@ -145,10 +146,11 @@ class MVIBeamCheck():
     
     # --- extraction / measurement ---
     def _extract_roi(self, roi: tuple[slice, slice]) -> np.ndarray:
-        return self.response[roi]
+          return self.response[roi]
       
     def _measure_roi_response(self, roi_offset_mm: tuple[float, float], roi_size_px: tuple[int, int]) -> float:
         roi = self._create_roi(roi_offset_mm, roi_size_px)
+        print(np.mean(self._extract_roi(roi)))
         return np.mean(self._extract_roi(roi))
     
     def _compute_output_deviation(self) -> float:
@@ -172,7 +174,7 @@ class MVIBeamCheck():
                 responses['D4'],
             ]
         )
-
+        
     def _compute_beam_quality_deviation(self) -> float:
         reference_flatness = self.config.beam_quality.reference_flatness
         beta = self.config.beam_quality.beta
