@@ -24,6 +24,7 @@ def compute_flatness(flatness_responses: dict) -> float:
     ]
 
     flatness = sum(off_axis_responses) / (len(off_axis_responses) * cax_response)
+
     return flatness
 
 
