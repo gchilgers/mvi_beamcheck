@@ -10,16 +10,16 @@ from pydicom import Dataset, dcmread
 
 from .config import BeamCheckConfig
 from .result import BeamCheckResult
-from .formulas import compute_output_deviation
+from .formulas import compute_output_deviation, compute_flatness, compute_beam_quality_deviation
 
 # --- ROI definitions (fixed method specification) ---
 ROIS = {
     'output': {'offset_mm': (0, 0), 'size_px': (101, 101)},
-    'flat_cax': {'offset_mm': (0, 0), 'size_px': (47, 21)},
-    'flat_D1': {'offset_mm': (0.6*90, 0.6*40), 'size_px': (47, 21)},
-    'flat_D2': {'offset_mm': (-0.6*90, 0.6*40), 'size_px': (47, 21)},
-    'flat_D3': {'offset_mm': (-0.6*90, -0.6*40), 'size_px': (47, 21)},
-    'flat_D4': {'offset_mm': (0.6*90, -0.6*40), 'size_px': (47, 21)},
+    'flatness_cax': {'offset_mm': (0, 0), 'size_px': (47, 21)},
+    'flatness_D1': {'offset_mm': (0.6*90, 0.6*40), 'size_px': (47, 21)},
+    'flatness_D2': {'offset_mm': (-0.6*90, 0.6*40), 'size_px': (47, 21)},
+    'flatness_D3': {'offset_mm': (-0.6*90, -0.6*40), 'size_px': (47, 21)},
+    'flatness_D4': {'offset_mm': (0.6*90, -0.6*40), 'size_px': (47, 21)},
 }
 
 class MVIBeamCheck():
@@ -34,6 +34,9 @@ class MVIBeamCheck():
         
         self.output_response = self._measure_roi_response(ROIS['output']['offset_mm'], ROIS['output']['size_px'])
         self.output_deviation = self._compute_output_deviation()
+
+        self.flatness = self._measure_flatness()
+        self.beam_quality_deviation = self._compute_beam_quality_deviation()
                 
     @classmethod
     def from_rtimage(cls, path: Path, config: dict) -> 'MVIBeamCheck':
@@ -69,6 +72,7 @@ class MVIBeamCheck():
         response[pixel_array == (2**16 - 1)] = np.nan
 
         return response
+          
 
     # --- ROI definition ---
     def _roi_offset_to_px(self, roi_offset_mm: tuple[float, float]) -> tuple[int, int]:
@@ -136,16 +140,28 @@ class MVIBeamCheck():
         crosscal_output = self.config.output.crosscal_output
         target_output = self.config.output.target_output
         return compute_output_deviation(self.output_response, crosscal_response, crosscal_output, target_output)
-    
+
+    def _compute_flatness(self) -> float:
+        flatness_responses = {
+            name: self._measure_roi_response(roi['offset_mm'], roi['size_px'])
+            for name, roi in ROIS.items()
+            if name.startswith('flatness_')
+        }
+        return compute_flatness(flatness_responses)
+
     def _compute_beam_quality_deviation(self) -> float:
-        raise NotImplementedError
+        reference_flatness = self.config.beam_quality.reference_flatness
+        beta = self.config.beam_quality.beta
+        return compute_beam_quality_deviation(self.flatness, reference_flatness, beta)
 
     # --- results / API ---
     def result(self) -> BeamCheckResult:
         return BeamCheckResult(
             timestamp = self.timestamp,
             output_response = float(self.output_response),
-            output_deviation = float(self.output_deviation)
+            output_deviation = float(self.output_deviation),
+            flatness = float(self.flatness),
+            beam_quality_deviation = float(self.beam_quality_deviation)
     )
 
     def __repr__(self):
@@ -154,5 +170,7 @@ class MVIBeamCheck():
             f'MVIBeamCheck('
             f'timestamp={result.timestamp.isoformat()}, '
             f'output_response={result.output_response:.3f}, '
-            f'output_deviation={result.output_deviation:.2f}%)'
+            f'output_deviation={result.output_deviation:.2f}%) ',
+            f'flatness={result.flatness:.3f}, '
+            f'beam_quality_deviation={result.beam_quality_deviation:.2f}%)'
     )
