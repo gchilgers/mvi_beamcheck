@@ -5,9 +5,9 @@ def compute_output_deviation(output_response: float, crosscal_response: float, c
     DOI: 10.1016/j.phro.2023.100411
     """
     output = output_response / crosscal_response * crosscal_output
-    deviation = output - target_output
 
     return ((output / target_output) - 1) * 100
+
 
 def compute_flatness(flatness_responses: dict) -> float:
     """ Compute diagonal normalized flatness.
