@@ -3,10 +3,17 @@ mean_isocenter_pixel = [512.837, 650.785]
 
 [output]
 crosscal_response = 2280231       
-# panel response in output ROI during cross calibration (-)
+# Panel response in the output ROI during cross-calibration (-)
 
 crosscal_output = 1.005965
-# output measured in water during cross calibration (cGy/MU)
+# Output measured in water during cross-calibration (cGy/MU)
 
 target_output = 1.000000               
-# target output (cGy/MU)
+# Target output (cGy/MU)
+
+[beam_quality]
+reference_flatness = 0.945883
+# Reference flatness at the commissioned beam quality (-)
+
+beta = -1.23
+# Conversion factor from percent flatness deviation to percent beam quality deviation (-)
