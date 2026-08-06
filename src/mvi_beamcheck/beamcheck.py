@@ -161,7 +161,6 @@ class MVIBeamCheck():
         responses = {
             name: self._measure_roi_response(roi['offset_mm'], roi['size_px'])
             for name, roi in FLATNESS_ROIS.items()
-            if name.startswith('flatness_')
         }
 
         return compute_flatness(
