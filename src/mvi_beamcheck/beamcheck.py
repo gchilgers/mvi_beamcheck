@@ -12,14 +12,30 @@ from .config import BeamCheckConfig
 from .result import BeamCheckResult
 from .formulas import compute_output_deviation, compute_flatness, compute_beam_quality_deviation
 
-# --- ROI definitions (fixed method specification) ---
-ROIS = {
-    'output': {'offset_mm': (0, 0), 'size_px': (101, 101)},
-    'flatness_cax': {'offset_mm': (0, 0), 'size_px': (47, 21)},
-    'flatness_D1': {'offset_mm': (0.6*90, 0.6*40), 'size_px': (47, 21)},
-    'flatness_D2': {'offset_mm': (-0.6*90, 0.6*40), 'size_px': (47, 21)},
-    'flatness_D3': {'offset_mm': (-0.6*90, -0.6*40), 'size_px': (47, 21)},
-    'flatness_D4': {'offset_mm': (0.6*90, -0.6*40), 'size_px': (47, 21)},
+# Published ROI definitions
+# Output ROI: Hilgers et al. 2023 (DOI: 10.1016/j.phro.2023.100411)
+# Flatness ROIs: Hilgers et al. 2026 (DOI: 10.1016/j.phro.2026.100930)
+
+OUTPUT_ROI = {'offset_mm': (0, 0),             
+              'size_px': (101, 101),
+}
+
+FLATNESS_ROIS = {
+    'CAX': {'offset_mm': (0, 0), 
+            'size_px': (47, 21)
+    }, 
+    'D1': {'offset_mm': (0.6*90, 0.6*40), 
+           'size_px': (47, 21)
+    },
+    'D2': {'offset_mm': (-0.6*90, 0.6*40), 
+           'size_px': (47, 21)
+    },
+    'D3': {'offset_mm': (-0.6*90, -0.6*40), 
+           'size_px': (47, 21)
+    },
+    'D4': {'offset_mm': (0.6*90, -0.6*40),
+           'size_px': (47, 21)
+    },
 }
 
 class MVIBeamCheck():
@@ -32,7 +48,7 @@ class MVIBeamCheck():
         self.timestamp = self._get_timestamp()
         self.response = self._compute_response()
         
-        self.output_response = self._measure_roi_response(ROIS['output']['offset_mm'], ROIS['output']['size_px'])
+        self.output_response = self._measure_roi_response(OUTPUT_ROI['offset_mm'], OUTPUT_ROI['Output']['size_px'])
         self.output_deviation = self._compute_output_deviation()
 
         self.flatness = self._compute_flatness()
@@ -142,12 +158,21 @@ class MVIBeamCheck():
         return compute_output_deviation(self.output_response, crosscal_response, crosscal_output, target_output)
 
     def _compute_flatness(self) -> float:
-        flatness_responses = {
+        responses = {
             name: self._measure_roi_response(roi['offset_mm'], roi['size_px'])
-            for name, roi in ROIS.items()
+            for name, roi in FLATNESS_ROIS.items()
             if name.startswith('flatness_')
         }
-        return compute_flatness(flatness_responses)
+
+        return compute_flatness(
+            cax_response = responses['CAX'],
+            off_axis_responses = [
+                responses['D1'], 
+                responses['D2'], 
+                responses['D3'], 
+                responses['D4'],
+            ]
+        )
 
     def _compute_beam_quality_deviation(self) -> float:
         reference_flatness = self.config.beam_quality.reference_flatness
