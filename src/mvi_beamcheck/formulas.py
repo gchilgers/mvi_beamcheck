@@ -25,3 +25,12 @@ def compute_flatness(flatness_responses: dict) -> float:
     return sum(off_axis_responses) / (len(off_axis_responses) * cax_response)
 
 
+def compute_beam_quality_deviation(flatness: float, reference_flatness: float, beta: float) -> float:
+    """ Compute beam quality deviation in percent.
+    
+    Implements Eq. 3 from Hilgers et al., 2026.
+    DOI: 10.1016/j.phro.2026.100930
+    """
+
+    return ((flatness / reference_flatness) - 1) * 100 * beta
+
