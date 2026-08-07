@@ -2,7 +2,7 @@
 mean_isocenter_pixel = [512.837, 650.785]
 
 [output]
-crosscal_response = 2280231       
+crosscal_response = 2280230.690419       
 # Panel response in the output ROI during cross-calibration (-)
 
 crosscal_output = 1.005965
