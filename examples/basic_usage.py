@@ -1,7 +1,7 @@
 """
 Example script: basic usage of MVIBeamCheck for a single RTImage.
 
-Processes a single RTImage dataset and prints results to the console.
+Processes a single RTImage dataset and prints result to the console.
 
 Notes:
 - The config file in /config is provided as an example.
@@ -32,5 +32,5 @@ ds = dcmread(root / 'tests' / 'data' / 'rtimg_example_anon.dcm')
 check = MVIBeamCheck(ds, config)
 result = check.result()
 
-# --- print results ---
+# --- print result ---
 print(result)
