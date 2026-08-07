@@ -32,13 +32,5 @@ ds = dcmread(root / 'tests' / 'data' / 'rtimg_example_anon.dcm')
 check = MVIBeamCheck(ds, config)
 
 
-# --- retrieve results ---
-result = check.result()
-
-
-# --- print key outputs ---
-print('\nBeam check results:')
-print(f'Output response: {result.output_response:.1f}')
-print(f'Output deviation: {result.output_deviation:.2f} %')
-print(f'Flatness: {result.flatness:.6f}')
-print(f'Beam quality deviation: {result.beam_quality_deviation:.2f} %')
+# --- print results ---
+print(check)

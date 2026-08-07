@@ -50,6 +50,10 @@ class MVIBeamCheck():
         
         self.output_response = self._measure_roi_response(OUTPUT_ROI['offset_mm'], OUTPUT_ROI['size_px'])
         self.output_deviation = self._compute_output_deviation()
+        self.flatness_responses = {
+            name: self._measure_roi_response(roi['offset_mm'], roi['size_px'])
+            for name, roi in FLATNESS_ROIS.items()
+        }
 
         self.flatness = self._compute_flatness()
         self.beam_quality_deviation = self._compute_beam_quality_deviation()
@@ -150,7 +154,6 @@ class MVIBeamCheck():
       
     def _measure_roi_response(self, roi_offset_mm: tuple[float, float], roi_size_px: tuple[int, int]) -> float:
         roi = self._create_roi(roi_offset_mm, roi_size_px)
-        print(np.mean(self._extract_roi(roi)))
         return np.mean(self._extract_roi(roi))
     
     def _compute_output_deviation(self) -> float:
@@ -160,18 +163,13 @@ class MVIBeamCheck():
         return compute_output_deviation(self.output_response, crosscal_response, crosscal_output, target_output)
 
     def _compute_flatness(self) -> float:
-        responses = {
-            name: self._measure_roi_response(roi['offset_mm'], roi['size_px'])
-            for name, roi in FLATNESS_ROIS.items()
-        }
-
         return compute_flatness(
-            cax_response = responses['CAX'],
+            cax_response = self.flatness_responses['CAX'],
             off_axis_responses = [
-                responses['D1'], 
-                responses['D2'], 
-                responses['D3'], 
-                responses['D4'],
+                self.flatness_responses['D1'], 
+                self.flatness_responses['D2'], 
+                self.flatness_responses['D3'], 
+                self.flatness_responses['D4'],
             ]
         )
         
@@ -186,17 +184,29 @@ class MVIBeamCheck():
             timestamp = self.timestamp,
             output_response = float(self.output_response),
             output_deviation = float(self.output_deviation),
+            flatness_responses = self.flatness_responses,
             flatness = float(self.flatness),
             beam_quality_deviation = float(self.beam_quality_deviation)
     )
 
     def __repr__(self):
         result = self.result()
+
+        flatness_responses_str = (
+            '{'
+            + ', '.join(
+                f'{name}: {value:.6f}'
+                for name, value in self.flatness_responses.items()
+            )
+            + '}'
+        )
+
         return (
             f'MVIBeamCheck('
             f'timestamp={result.timestamp.isoformat()}, '
-            f'output_response={result.output_response:.3f}, '
-            f'output_deviation={result.output_deviation:.2f}%) ',
-            f'flatness={result.flatness:.3f}, '
+            f'output_response={result.output_response:.6f}, '
+            f'output_deviation={result.output_deviation:.2f}%, '
+            f'flatness_responses={flatness_responses_str}, '
+            f'flatness={result.flatness:.6f}, '
             f'beam_quality_deviation={result.beam_quality_deviation:.2f}%)'
-    )
+        )
