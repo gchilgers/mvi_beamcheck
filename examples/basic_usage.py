@@ -30,7 +30,7 @@ ds = dcmread(root / 'tests' / 'data' / 'rtimg_example_anon.dcm')
 
 # --- run beam check ---
 check = MVIBeamCheck(ds, config)
-
+result = check.result()
 
 # --- print results ---
-print(check)
+print(result)

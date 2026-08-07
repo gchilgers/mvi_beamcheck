@@ -188,25 +188,3 @@ class MVIBeamCheck():
             flatness = float(self.flatness),
             beam_quality_deviation = float(self.beam_quality_deviation)
     )
-
-    def __repr__(self):
-        result = self.result()
-
-        flatness_responses_str = (
-            '{'
-            + ', '.join(
-                f'{name}: {value:.6f}'
-                for name, value in self.flatness_responses.items()
-            )
-            + '}'
-        )
-
-        return (
-            f'MVIBeamCheck('
-            f'timestamp={result.timestamp.isoformat()}, '
-            f'output_response={result.output_response:.6f}, '
-            f'output_deviation={result.output_deviation:.2f}%, '
-            f'flatness_responses={flatness_responses_str}, '
-            f'flatness={result.flatness:.6f}, '
-            f'beam_quality_deviation={result.beam_quality_deviation:.2f}%)'
-        )
