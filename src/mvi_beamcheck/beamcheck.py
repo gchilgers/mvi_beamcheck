@@ -144,10 +144,10 @@ class MVIBeamCheck():
         return (roi_center_i_px, roi_center_j_px)
     
     def _create_roi(self, roi_offset_mm: tuple[float, float], roi_size_px: tuple[int, int]) -> tuple[slice, slice]:
-        # --- center position in pixels ---
+        # --- center position of the ROI in the response matrix ---
         center_i, center_j = self._roi_offset_to_px(roi_offset_mm)
     
-        # --- ROI size ---
+        # --- ROI size in pixels: (u, v) -> (j, i) ---
         size_j, size_i = roi_size_px
 
         half_i = size_i // 2
