@@ -44,7 +44,7 @@ class MVIBeamCheck():
         self.config = BeamCheckConfig.from_dict(config)
         
         self.timestamp = self._get_timestamp()
-        self.response = self._compute_response()
+        self.response_matrix = self._compute_response_matrix()
         
         self.output_response = self._measure_roi_response(OUTPUT_ROI['offset_mm'], OUTPUT_ROI['size_px'])
         self.output_deviation = self._compute_output_deviation()
@@ -76,7 +76,7 @@ class MVIBeamCheck():
 
         return datetime.strptime(timestamp_as_str, '%Y%m%d%H%M%S%f')
 
-    def _compute_response(self) -> np.ndarray:
+    def _compute_response_matrix(self) -> np.ndarray:
         pixel_array = self.rtimage.pixel_array
 
         tag = self.rtimage.get((0x0021, 0x1002))
@@ -84,12 +84,12 @@ class MVIBeamCheck():
             raise ValueError('Missing pixel factor (required for response computation)')
         pixel_factor = float(tag.value)
 
-        response = (2**16 - 1 - pixel_array) / pixel_factor
+        response_matrix = (2**16 - 1 - pixel_array) / pixel_factor
 
         # exclude saturated pixels (vendor-applied mask)
-        response[pixel_array == (2**16 - 1)] = np.nan
+        response_matrix[pixel_array == (2**16 - 1)] = np.nan
 
-        return response
+        return response_matrix
           
 
     # --- ROI definition ---
@@ -161,7 +161,7 @@ class MVIBeamCheck():
     
     # --- extraction / measurement ---
     def _extract_roi(self, roi: tuple[slice, slice]) -> np.ndarray:
-          return self.response[roi]
+          return self.response_matrix[roi]
       
     def _measure_roi_response(self, roi_offset_mm: tuple[float, float], roi_size_px: tuple[int, int]) -> float:
         roi = self._create_roi(roi_offset_mm, roi_size_px)
