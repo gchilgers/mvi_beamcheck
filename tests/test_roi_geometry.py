@@ -22,27 +22,27 @@ def test_flatness_rois_are_correctly_positioned():
     # --- run beam check ---
     check = MVIBeamCheck(ds, config)
 
-    # --- create synthetic image ---
-    response = check.response.copy()
-    synthetic = np.full_like(response, np.nan)
+    # --- create synthetic response matrix ---
+    response_matrix = check.response_matrix.copy()
+    synthetic_response_matrix = np.full_like(response_matrix, np.nan)
 
-    # --- isocenter pixel vendor (x, y, 1-based) → internal (i, j, 0-based) ---
-    iso_x_vendor_px, iso_y_vendor_px = check.config.imager.mean_isocenter_pixel
-    iso_i_px = int(iso_y_vendor_px - 1)
-    iso_j_px = int(iso_x_vendor_px - 1)
+    # --- isocenter pixel vendor (u, v, 1-based) → internal (i, j, 0-based) ---
+    iso_u_vendor_px, iso_v_vendor_px = check.config.imager.mean_isocenter_pixel
+    iso_i_px = int(iso_v_vendor_px - 1)
+    iso_j_px = int(iso_u_vendor_px - 1)
 
     # --- adjust synthetic image ---
-    n_rows, n_cols = synthetic.shape
-    synthetic[0:iso_i_px, iso_j_px:n_cols] = 1000       # D1 quadrant (upper right)
-    synthetic[0:iso_i_px, 0:iso_j_px] = 2000            # D2 quadrant (upper left)
-    synthetic[iso_i_px:n_rows, 0:iso_j_px] = 3000       # D3 quadrant (lower left)
-    synthetic[iso_i_px:n_rows, iso_j_px:n_cols] = 4000  # D4 quadrant (lower right)
-    synthetic[iso_i_px, :] = np.nan                     # isocenter row
-    synthetic[:, iso_j_px] = np.nan                     # isocenter col
-    synthetic[np.isnan(response)] = np.nan              # restore original vendor mask
+    n_rows, n_cols = synthetic_response_matrix.shape
+    synthetic_response_matrix[0:iso_i_px, iso_j_px:n_cols] = 1000       # D1 quadrant (upper right)
+    synthetic_response_matrix[0:iso_i_px, 0:iso_j_px] = 2000            # D2 quadrant (upper left)
+    synthetic_response_matrix[iso_i_px:n_rows, 0:iso_j_px] = 3000       # D3 quadrant (lower left)
+    synthetic_response_matrix[iso_i_px:n_rows, iso_j_px:n_cols] = 4000  # D4 quadrant (lower right)
+    synthetic_response_matrix[iso_i_px, :] = np.nan                     # isocenter row
+    synthetic_response_matrix[:, iso_j_px] = np.nan                     # isocenter col
+    synthetic_response_matrix[np.isnan(response_matrix)] = np.nan       # restore original vendor mask
 
     # --- overwrite response with synthetic image ---
-    check.response = synthetic
+    check.response_matrix = synthetic_response_matrix
 
     # --- test ---
     assert check._measure_roi_response(
