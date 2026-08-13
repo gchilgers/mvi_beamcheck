@@ -12,14 +12,12 @@ from .config import BeamCheckConfig
 from .result import BeamCheckResult
 from .formulas import compute_output_deviation, compute_flatness, compute_beam_quality_deviation
 
-# Published ROI definitions
-# Output ROI: Hilgers et al. 2023 (DOI: 10.1016/j.phro.2023.100411)
-# Flatness ROIs: Hilgers et al. 2026 (DOI: 10.1016/j.phro.2026.100930)
-
+# --- Output ROI: Hilgers et al. 2023 (DOI: 10.1016/j.phro.2023.100411) ---
 OUTPUT_ROI = {'offset_mm': (0, 0),             
               'size_px': (101, 101),
 }
 
+# --- Flatness ROIs: Hilgers et al. 2026 (DOI: 10.1016/j.phro.2026.100930) ---
 FLATNESS_ROIS = {
     'CAX': {'offset_mm': (0, 0), 
             'size_px': (47, 21)
@@ -96,10 +94,23 @@ class MVIBeamCheck():
 
     # --- ROI definition ---
     def _roi_offset_to_px(self, roi_offset_mm: tuple[float, float]) -> tuple[int, int]:
-        # --- isocenter pixel vendor (x, y, 1-based) → internal (i, j, 0-based) ---
-        iso_x_vendor_px, iso_y_vendor_px = self.config.imager.mean_isocenter_pixel
-        iso_i_px = int(iso_y_vendor_px - 1)
-        iso_j_px = int(iso_x_vendor_px - 1)
+        """
+        Convert an ROI offset in imager coordinates to image-array indices.
+
+        Coordinate systems:
+        - (u, v): imager coordinates in the detector plane, expressed either
+        in millimetres relative to isocenter or in image pixels.
+        - (i, j): NumPy array indices, where i is the row index and j is the
+        column index (0-based).
+
+        Pixels are treated as discrete detector elements rather than sub-pixel
+        locations. Vendor mean isocenter pixel is provided as 1-based (u, v)
+        pixel coordinates and are converted to internal 0-based (i, j) indices.
+        """
+        # --- isocenter pixel vendor (u, v, 1-based) → internal (i, j, 0-based) ---
+        iso_u_vendor_px, iso_v_vendor_px = self.config.imager.mean_isocenter_pixel
+        iso_i_px = int(iso_v_vendor_px - 1)
+        iso_j_px = int(iso_u_vendor_px - 1)
     
         # --- pixel spacing (mm per pixel) ---
         pixel_spacing = getattr(self.rtimage, 'ImagePlanePixelSpacing', None)
@@ -120,11 +131,11 @@ class MVIBeamCheck():
         SAD_mm = float(SAD_mm)
     
         # --- offsets (mm) ---
-        offset_x_mm, offset_y_mm = roi_offset_mm
+        offset_u_mm, offset_v_mm = roi_offset_mm
     
         # --- convert mm → pixels  ---
-        offset_i_px = int((offset_y_mm * (SID_mm / SAD_mm)) / pixel_spacing_i)
-        offset_j_px = int((offset_x_mm * (SID_mm / SAD_mm)) / pixel_spacing_j)
+        offset_i_px = int((offset_v_mm * (SID_mm / SAD_mm)) / pixel_spacing_i)
+        offset_j_px = int((offset_u_mm * (SID_mm / SAD_mm)) / pixel_spacing_j)
     
         # --- ROI center in px ---
         roi_center_i_px = iso_i_px - offset_i_px
