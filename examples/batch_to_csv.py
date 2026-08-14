@@ -51,7 +51,10 @@ with open(output_csv, 'w', newline='') as f:
             'filename',
             'timestamp',
             'output_response',
-            'output_deviation_percent',
+            'output_deviation',
+            'flatness_responses',
+            'flatness',
+            'beam_quality_deviation',
         ],
     )
 
