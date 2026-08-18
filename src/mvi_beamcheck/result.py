@@ -11,14 +11,21 @@ class BeamCheckResult:
     beam_quality_deviation: float
 
     def to_dict(self) -> dict:
-        return {
+
+        d = {
             'timestamp': self.timestamp.isoformat(),
             'output_response': self.output_response,
-            'flatness_responses': self.flatness_responses,
             'output_deviation': self.output_deviation,
             'flatness': self.flatness,
-            'beam_quality_deviation': self.beam_quality_deviation
+            'beam_quality_deviation': self.beam_quality_deviation,
         }
+
+        d.update(
+            {f'flatness_{k}': float(v)
+            for k, v in self.flatness_responses.items()}
+        )
+
+        return d
 
 
     def __repr__(self):
