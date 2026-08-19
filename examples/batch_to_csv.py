@@ -45,26 +45,10 @@ output_csv = data_dir / 'output.csv'
 
 # --- process and write results ---
 with open(output_csv, 'w', newline='') as f:
-    writer = csv.DictWriter(
-        f,
-        fieldnames=[
-            'filename',
-            'timestamp',
-            'output_response',
-            'output_deviation',
-            'flatness_CAX',
-            'flatness_D1',
-            'flatness_D2',
-            'flatness_D3',
-            'flatness_D4',
-            'flatness',
-            'beam_quality_deviation',
-        ],
-    )
-
-    writer.writeheader()
+    writer = None
 
     for path in sorted(data_dir.glob('*.dcm')):
+
         ds = dcmread(path)
 
         check = MVIBeamCheck(ds, config)
@@ -72,7 +56,11 @@ with open(output_csv, 'w', newline='') as f:
 
         row = {'filename': path.name, **result.to_dict()}
 
+        # --- create writer once, based on actual result fields ---
+        if writer is None:
+            fieldnames = list(row.keys())
+            writer = csv.DictWriter(f, fieldnames=fieldnames, delimiter=';')  # Improved Excel compatibility in decimal-comma locales.
+            writer.writeheader()
         writer.writerow(row)
-
 
 print(f'\nBatch processing complete. Results written to: {output_csv}')

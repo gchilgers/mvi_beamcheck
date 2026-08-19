@@ -16,14 +16,16 @@ class BeamCheckResult:
             'timestamp': self.timestamp.isoformat(),
             'output_response': self.output_response,
             'output_deviation': self.output_deviation,
-            'flatness': self.flatness,
-            'beam_quality_deviation': self.beam_quality_deviation,
         }
 
         d.update(
             {f'flatness_{k}': float(v)
             for k, v in self.flatness_responses.items()}
         )
+
+        d.update({'flatness': self.flatness,
+                  'beam_quality_deviation': self.beam_quality_deviation,
+        })
 
         return d
 
