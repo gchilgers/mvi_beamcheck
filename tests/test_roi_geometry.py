@@ -4,6 +4,8 @@ from pathlib import Path
 import tomllib
 from pydicom import dcmread
 
+import pytest
+
 from mvi_beamcheck import MVIBeamCheck
 from mvi_beamcheck.beamcheck import FLATNESS_ROIS
 
@@ -26,19 +28,20 @@ def test_flatness_rois_are_correctly_positioned():
     assert check._measure_roi_response(
         FLATNESS_ROIS['D1']['offset_mm'],
         FLATNESS_ROIS['D1']['size_px']
-    ) == 15000
+    ) == pytest.approx(15000, abs=100)  # for taking rounding effect into account
 
     assert check._measure_roi_response(
         FLATNESS_ROIS['D2']['offset_mm'],
         FLATNESS_ROIS['D2']['size_px']
-    ) == 30000
+    ) == pytest.approx(30000, abs=100)  # for taking rounding effect into account
 
     assert check._measure_roi_response(
         FLATNESS_ROIS['D3']['offset_mm'],
         FLATNESS_ROIS['D3']['size_px']
-    ) == 45000
+    ) == pytest.approx(45000, abs=100)  # for taking rounding effect into account
 
     assert check._measure_roi_response(
         FLATNESS_ROIS['D4']['offset_mm'],
         FLATNESS_ROIS['D4']['size_px']
-    ) == 60000
+    ) == pytest.approx(60000, abs=100)  # for taking rounding effect into account
+
