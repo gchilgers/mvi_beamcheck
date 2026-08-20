@@ -9,7 +9,7 @@ import pytest
 from mvi_beamcheck import MVIBeamCheck
 from mvi_beamcheck.beamcheck import FLATNESS_ROIS
 
-def test_flatness_rois_are_correctly_positioned():
+def test_flatness_off_axis_rois_are_correctly_positioned():
     # --- locate project root ---
     root = Path(__file__).resolve().parents[1]
 
