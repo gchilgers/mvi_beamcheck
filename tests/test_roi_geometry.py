@@ -1,5 +1,5 @@
 """
-Tests for flatness ROI positioning.
+Tests for flatness ROI geometry.
 
 The synthetic RTIMAGE test pattern is constructed such that:
 - The CAX region consists entirely of saturated pixels (65535), which are
@@ -9,7 +9,14 @@ The synthetic RTIMAGE test pattern is constructed such that:
 - The pixel factor (0021,1002) is set to 1.0 to avoid scaling and potential
   floating-point rounding effects, allowing exact equality assertions.
 
-Therefore, all asserted values in this test module are exact by design.
+These tests verify:
+- Correct assignment of the off-axis ROIs (D1-D4) to the intended quadrants.
+- Complete overlap of the CAX ROI with a central masked region of identical
+  dimensions.
+- Identical ROI dimensions for the CAX and off-axis flatness ROIs.
+
+These tests do not verify:
+- The exact pixel coordinates of the off-axis ROI centres.
 """
 
 import numpy as np
@@ -51,6 +58,7 @@ def test_flatness_cax_roi_is_correctly_positioned(check):
 
     assert np.isnan(response), f'Expected NaN, got {response}' 
 
+
 def test_flatness_off_axis_rois_are_correctly_positioned(check):
     # The synthetic RTIMAGE contains uniform regions with predefined response
     # values. If each ROI is positioned correctly, the ROI mean equals the
@@ -67,3 +75,30 @@ def test_flatness_off_axis_rois_are_correctly_positioned(check):
         )
 
         assert response == expected, f'Expected {expected} for ROI {roi_name}, got {response}'
+
+
+def test_flatness_rois_have_same_shape(check):
+    cax_roi = check._extract_roi(
+        check._create_roi(
+            FLATNESS_ROIS['CAX']['offset_mm'],
+            FLATNESS_ROIS['CAX']['size_px']
+        )
+    )
+
+    # The synthetic test pattern is constructed such that the CAX ROI
+    # is completely filled with NaN values.
+    assert np.all(np.isnan(cax_roi))
+
+    cax_shape = cax_roi.shape
+
+    for roi_name in ['D1', 'D2', 'D3', 'D4']:
+        shape = check._extract_roi(
+            check._create_roi(
+                FLATNESS_ROIS[roi_name]['offset_mm'],
+                FLATNESS_ROIS[roi_name]['size_px']
+            )
+        ).shape
+
+        assert shape == cax_shape, (
+            f'Expected shape {cax_shape} for ROI {roi_name}, got {shape}'
+        )
