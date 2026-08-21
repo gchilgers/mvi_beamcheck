@@ -17,8 +17,8 @@ that it can be parsed into a `BeamCheckConfig` dataclass.
 
 ### Formula implementations
 
-The implementations of the output deviation, flatness, and beam-quality
-deviation formulas are verified against their mathematical definitions.
+The formula implementations for calculating the output deviation, flatness, 
+and beam quality deviation are verified against their mathematical definitions.
 
 ### End-to-end pipeline
 
