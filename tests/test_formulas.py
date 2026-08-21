@@ -1,3 +1,10 @@
+"""
+Tests for mathematical formulas.
+
+These tests verify that the implemented formulas match their mathematical
+definitions.
+"""
+
 from mvi_beamcheck.formulas import compute_output_deviation, compute_flatness, compute_beam_quality_deviation
 
 def test_output_deviation_formula():

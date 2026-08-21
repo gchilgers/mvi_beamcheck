@@ -1,9 +1,17 @@
+"""
+Test for configuration parsing.
+
+This test verifies that the example TOML configuration can be parsed into a
+BeamCheckConfig dataclass and serves as a guard against schema changes that
+would make the distributed example configuration invalid.
+"""
+
 from pathlib import Path
 import tomllib
 
 from mvi_beamcheck.config import BeamCheckConfig
 
-def test_example_config_can_be_loaded():
+def test_example_config_parses_to_beamcheck_config():
     # --- locate file ---
     root = Path(__file__).resolve().parents[1]
     path = root / 'config' / 'example.toml'
