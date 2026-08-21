@@ -55,10 +55,12 @@ class MVIBeamCheck():
 
         self.flatness = self._compute_flatness()
         self.beam_quality_deviation = self._compute_beam_quality_deviation()
+
                 
     @classmethod
     def from_rtimage(cls, path: Path, config: dict) -> 'MVIBeamCheck':
         return cls(dcmread(path), config)
+
 
     # --- metadata / preprocessing ---
     def _get_timestamp(self) -> datetime:
@@ -75,6 +77,7 @@ class MVIBeamCheck():
         timestamp_as_str = (acquisition_date + acquisition_time).replace('.', '')
 
         return datetime.strptime(timestamp_as_str, '%Y%m%d%H%M%S%f')
+
 
     def _compute_response_matrix(self) -> np.ndarray:
         pixel_array = self.rtimage.pixel_array
@@ -142,6 +145,7 @@ class MVIBeamCheck():
         roi_center_j_px = iso_j_px + offset_j_px
     
         return (roi_center_i_px, roi_center_j_px)
+
     
     def _create_roi(self, roi_offset_mm: tuple[float, float], roi_size_px: tuple[int, int]) -> tuple[slice, slice]:
         # --- center position of the ROI in the response matrix ---
@@ -158,20 +162,33 @@ class MVIBeamCheck():
         slice_j = slice(center_j - half_j, center_j + half_j + 1)
     
         return (slice_i, slice_j)  
+
     
     # --- extraction / measurement ---
     def _extract_roi(self, roi: tuple[slice, slice]) -> np.ndarray:
           return self.response_matrix[roi]
+
       
     def _measure_roi_response(self, roi_offset_mm: tuple[float, float], roi_size_px: tuple[int, int]) -> float:
+        """
+        Measure the mean response within an ROI.
+
+        ROI responses are computed using numpy.mean(). Consequently, the presence
+        of a NaN pixel within an ROI causes the ROI response to become NaN. While
+        this is expected for intentionally vendor-masked regions, an unexpected
+        NaN response may indicate a detector defect (e.g. a dead pixel) or another
+        pixel-data integrity issue within the ROI.
+        """
         roi = self._create_roi(roi_offset_mm, roi_size_px)
         return np.mean(self._extract_roi(roi))
+
     
     def _compute_output_deviation(self) -> float:
         crosscal_response = self.config.output.crosscal_response
         crosscal_output = self.config.output.crosscal_output
         target_output = self.config.output.target_output
         return compute_output_deviation(self.output_response, crosscal_response, crosscal_output, target_output)
+
 
     def _compute_flatness(self) -> float:
         return compute_flatness(
@@ -183,11 +200,13 @@ class MVIBeamCheck():
                 self.flatness_responses['D4'],
             ]
         )
+
         
     def _compute_beam_quality_deviation(self) -> float:
         reference_flatness = self.config.beam_quality.reference_flatness
         beta = self.config.beam_quality.beta
         return compute_beam_quality_deviation(self.flatness, reference_flatness, beta)
+
 
     # --- results / API ---
     def result(self) -> BeamCheckResult:
