@@ -17,8 +17,8 @@ that it can be parsed into a `BeamCheckConfig` dataclass.
 
 ### Formula implementations
 
-Unit tests verify that the implementations of the output deviation, flatness,
-and beam quality deviation formulas match their mathematical definitions.
+The implementations of the output deviation, flatness, and beam-quality
+deviation formulas are verified against their mathematical definitions.
 
 ### End-to-end pipeline
 
@@ -28,10 +28,9 @@ reference values.
 
 ### ROI geometry
 
-ROI geometry is validated using the synthetic RTIMAGE test pattern
-`rtimg_test_pattern.dcm`. These tests verify the flatness ROI geometry, whereas
-the output ROI geometry is verified indirectly through the end-to-end pipeline
-tests.
+ROI geometry tests use a synthetic RTIMAGE test pattern
+(`rtimg_test_pattern.dcm`) and verify the flatness ROI geometry. Output ROI
+geometry is verified indirectly through the end-to-end pipeline tests.
 
 ## References:<br>
 1.  Hilgers et al. (2023) - https://doi.org/10.1016/j.phro.2023.100411
