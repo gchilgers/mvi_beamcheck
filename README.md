@@ -3,11 +3,35 @@ A Python package for verifying beam output and X-ray beam quality on a 1.5 T M
 
 This repository implements methods for the analysis of MVI-based beam output and X-ray beam quality previously described in peer-reviewed work [1, 2] and reflects ongoing development toward a structured, reusable software package. It provides a transparent and configurable approach for consistent and reproducible analysis across systems, without requiring user-specific reimplementation.
 
-## Getting started
+## Quick start
 
-Work in progress.
+## Test Suite
 
-Example usage and configuration will be added.
+The test suite combines unit and integration tests to verify configuration
+parsing, formula implementations, end-to-end processing, and ROI geometry.
+
+### Configuration parsing
+
+The example configuration (`config/example.toml`) is validated by verifying
+that it can be parsed into a `BeamCheckConfig` dataclass.
+
+### Formula implementations
+
+Unit tests verify that the implementations of the output deviation, flatness,
+and beam quality deviation formulas match their mathematical definitions.
+
+### End-to-end pipeline
+
+Pipeline tests process a representative RTIMAGE (`rtimg_example_anon.dcm`)
+using the example configuration and compare the computed results against known
+reference values.
+
+### ROI geometry
+
+ROI geometry is validated using the synthetic RTIMAGE test pattern
+`rtimg_test_pattern.dcm`. These tests verify the flatness ROI geometry, whereas
+the output ROI geometry is verified indirectly through the end-to-end pipeline
+tests.
 
 ## References:<br>
 1.  Hilgers et al. (2023) - https://doi.org/10.1016/j.phro.2023.100411
