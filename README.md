@@ -6,7 +6,7 @@ This repository implements methods for the analysis of MVI-based beam output and
 ## Quick start
 
 ## Configuration
-MVIBeamCheck requires a machine-specific configuration file containing the parameters for output and X-ray beam quality calculations. Users should create their own. See `example.toml` for the required structure and parameter definitions.
+MVIBeamCheck requires a machine-specific configuration file containing the parameters for output and X-ray beam quality calculations. Users should create their own based on `example.toml`. The example file should not be modified, as it is used by the test suite.
 
 ## Methodology
 
