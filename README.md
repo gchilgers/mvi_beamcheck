@@ -50,18 +50,19 @@ ROI dimensions are specified directly in pixels and are therefore unaffected by 
 
 ## Test suite
 
-The test suite combines unit and integration tests to verify configuration
-parsing, formula implementations, end-to-end processing, and ROI geometry.
+The test suite combines unit and integration tests to verify configuration parsing, formula implementations, end-to-end processing, and ROI geometry.
 
 ### Configuration parsing
 
-The example configuration (`config/example.toml`) is validated by verifying
-that it can be parsed into a `BeamCheckConfig` dataclass.
+The example configuration (`config/example.toml`) is validated by verifying that it can be parsed into a `BeamCheckConfig` dataclass.
 
 ### Formula implementations
 
-The formula implementations for calculating the output deviation, flatness, 
-and beam quality deviation are verified against their mathematical definitions.
+The formula implementations for calculating the output deviation, flatness, and beam quality deviation are verified against their mathematical definitions.
+
+### Flatness ROI geometry
+
+Flatness ROI geometry tests use a synthetic RTIMAGE test pattern (`rtimg_test_pattern.dcm`) to verify the placement and dimensions of the central and off-axis flatness ROIs.
 
 ### End-to-end pipeline
 
@@ -69,11 +70,6 @@ Pipeline tests process a representative RTIMAGE (`rtimg_example_anon.dcm`)
 using the example configuration and compare the computed results against known
 reference values.
 
-### ROI geometry
-
-ROI geometry tests use a synthetic RTIMAGE test pattern
-(`rtimg_test_pattern.dcm`) and verify the flatness ROI geometry. Output ROI
-geometry is verified indirectly through the end-to-end pipeline tests.
 
 ## References:<br>
 1.  Hilgers et al. (2023) - https://doi.org/10.1016/j.phro.2023.100411
