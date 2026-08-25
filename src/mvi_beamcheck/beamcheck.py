@@ -106,11 +106,12 @@ class MVIBeamCheck():
         - (i, j): NumPy array indices, where i is the row index and j is the
         column index (0-based).
 
-        Pixels are treated as discrete detector elements rather than sub-pixel
-        locations. Vendor mean isocenter pixel is provided as 1-based (u, v)
-        pixel coordinates and are converted to internal 0-based (i, j) indices.
+        Beam-center and ROI locations are represented on the detector pixel grid.
+        Vendor-reported subpixel beam-center coordinates are mapped to the center
+        of the containing pixel before ROI calculations are performed.
         """
-        # --- isocenter pixel vendor (u, v, 1-based) → internal (i, j, 0-based) ---
+
+        # --- isocenter pixel vendor (u, v, 1-based) → internal (j, i, 0-based) ---
         iso_u_vendor_px, iso_v_vendor_px = self.config.imager.mean_isocenter_pixel
         iso_i_px = int(iso_v_vendor_px - 1)
         iso_j_px = int(iso_u_vendor_px - 1)

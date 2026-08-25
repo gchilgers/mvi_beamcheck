@@ -5,6 +5,50 @@ This repository implements methods for the analysis of MVI-based beam output and
 
 ## Quick start
 
+## Configuration
+
+
+
+## Methodology
+
+## Pixel discretization
+**Note**
+*For clarity, pixel coordinates in this section are presented as `(col, row)`.*
+
+The machine geometry file stores the vendor-reported beam center using subpixel image coordinates and a 1-based indexing system. These coordinates should be copied unchanged to the configuration file. For example:
+
+```text
+mean_isocenter_pixel = [512.837, 650.785]
+```
+
+The vendor defines the first pixel as (1, 1), whereas the exported RTIMAGE uses (0, 0) as the first pixel. During processing, the coordinates are therefore converted from 1-based to 0-based indexing:
+```text
+(512.837, 650.785) → (511.837, 649.785)
+```
+
+MVIBeamCheck does not retain the vendor-reported subpixel beam center coordinates. Instead, it determines the pixel containing the converted beam center coordinates:
+```text
+(511.837, 649.785) → (511, 649)
+```
+
+For calculations, pixel centers are assumed to lie at half-integer coordinates (e.g., pixel 0 is centered at 0.5). The beam center used by the software is therefore defined as the center of the containing pixel:
+```text
+(511.5, 649.5)
+```
+
+Off-axis ROI centers are defined at fixed physical distances from the beam center. These distances are converted to pixel offsets. Fractional pixel offsets are discarded, yielding integer pixel displacements relative to the beam center pixel. Consequently, all ROI centers coincide with pixel center locations.
+
+For example, if the beam center is represented by pixel '(649, 511)' and an off-axis ROI is located 249.996 pixels to the right and 111.109 pixels upward, the off-axis ROI center is placed at:
+
+```text
+(511.5 + 249, 649.5 - 111) = (760.5, 538.5)
+```
+
+Even though the continuous ROI center would be located slightly further from the beam center, the software uses the integer pixel displacement only. The resulting ROI center position differs from the corresponding continuous position by less than one pixel along each image axis (~0.2 mm at isocenter level).
+
+### ROI dimensions
+ROI dimensions are specified directly in pixels and are therefore unaffected by discretization of the ROI center.
+
 ## Test Suite
 
 The test suite combines unit and integration tests to verify configuration
