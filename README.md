@@ -6,13 +6,12 @@ This repository implements methods for the analysis of MVI-based beam output and
 ## Quick start
 
 ## Configuration
-
-
+MVIBeamCheck requires a machine-specific configuration file containing the parameters for output and X-ray beam quality calculations. Users should create their own. See `example.toml` for the required structure and parameter definitions.
 
 ## Methodology
 
-## Pixel discretization
-**Note**
+### Pixel discretization
+**Note:**  
 *For clarity, pixel coordinates in this section are presented as `(col, row)`.*
 
 The machine geometry file stores the vendor-reported beam center using subpixel image coordinates and a 1-based indexing system. These coordinates should be copied unchanged to the configuration file. For example:
@@ -38,7 +37,7 @@ For calculations, pixel centers are assumed to lie at half-integer coordinates (
 
 Off-axis ROI centers are defined at fixed physical distances from the beam center. These distances are converted to pixel offsets. Fractional pixel offsets are discarded, yielding integer pixel displacements relative to the beam center pixel. Consequently, all ROI centers coincide with pixel center locations.
 
-For example, if the beam center is represented by pixel '(649, 511)' and an off-axis ROI is located 249.996 pixels to the right and 111.109 pixels upward, the off-axis ROI center is placed at:
+For example, if the beam center is located at (511.5, 649.5) and an off-axis ROI is located 249.996 pixels to the right and 111.109 pixels upward, the off-axis ROI center is placed at:
 
 ```text
 (511.5 + 249, 649.5 - 111) = (760.5, 538.5)

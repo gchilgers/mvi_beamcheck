@@ -1,5 +1,6 @@
 [imager]
 mean_isocenter_pixel = [512.837, 650.785]
+# As defined in the machine geometry file; do not convert to 0-based indexing.
 
 [output]
 crosscal_response = 2280230.690419       
