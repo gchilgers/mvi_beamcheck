@@ -48,7 +48,7 @@ Even though the continuous ROI center would be located slightly further from the
 ### ROI dimensions
 ROI dimensions are specified directly in pixels and are therefore unaffected by discretization of the ROI center.
 
-## Test Suite
+## Test suite
 
 The test suite combines unit and integration tests to verify configuration
 parsing, formula implementations, end-to-end processing, and ROI geometry.
