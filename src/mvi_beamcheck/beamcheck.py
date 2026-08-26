@@ -97,24 +97,11 @@ class MVIBeamCheck():
 
     # --- ROI definition ---
     def _roi_offset_to_px(self, roi_offset_mm: tuple[float, float]) -> tuple[int, int]:
-        """
-        Convert an ROI offset in imager coordinates to image-array indices.
-
-        Coordinate systems:
-        - (u, v): imager coordinates in the detector plane, expressed either
-        in millimetres relative to isocenter or in image pixels.
-        - (i, j): NumPy array indices, where i is the row index and j is the
-        column index (0-based).
-
-        Beam-center and ROI locations are represented on the detector pixel grid.
-        Vendor-reported subpixel beam-center coordinates are mapped to the center
-        of the containing pixel before ROI calculations are performed.
-        """
 
         # --- isocenter pixel vendor (u, v, 1-based) → internal (j, i, 0-based) ---
         iso_u_vendor_px, iso_v_vendor_px = self.config.imager.mean_isocenter_pixel
-        iso_i_px = int(iso_v_vendor_px - 1)
-        iso_j_px = int(iso_u_vendor_px - 1)
+        iso_i_px = int(round(iso_v_vendor_px - 1))                                      # was int now round added
+        iso_j_px = int(round(iso_u_vendor_px - 1))                                      # was int now round added
     
         # --- pixel spacing (mm per pixel) ---
         pixel_spacing = getattr(self.rtimage, 'ImagePlanePixelSpacing', None)
@@ -138,8 +125,8 @@ class MVIBeamCheck():
         offset_u_mm, offset_v_mm = roi_offset_mm
     
         # --- convert mm → pixels  ---
-        offset_i_px = int((offset_v_mm * (SID_mm / SAD_mm)) / pixel_spacing_i)
-        offset_j_px = int((offset_u_mm * (SID_mm / SAD_mm)) / pixel_spacing_j)
+        offset_i_px = int(round((offset_v_mm * (SID_mm / SAD_mm)) / pixel_spacing_i))       # was int now round added
+        offset_j_px = int(round((offset_u_mm * (SID_mm / SAD_mm)) / pixel_spacing_j))       # was int now round added
     
         # --- ROI center in px ---
         roi_center_i_px = iso_i_px - offset_i_px
