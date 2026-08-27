@@ -1,8 +1,11 @@
 """
-Contains the main computational class MVIBeamCheck. This class reads the DICOM 
-image (via from_rtimage), calls the image processing helpers, computes output and 
-beam quality deviations, and returns a BeamCheckResult.
+Contains the main computational class MVIBeamCheck. 
+
+MVIBeamCheck reads an RTIMAGE converts pixel values to response values,
+measures predefined output and flatness ROIs, computes output and beam
+quality deviations, and exposes the results through BeamCheckResult.
 """
+
 from pathlib import Path
 import numpy as np
 from datetime import datetime
@@ -37,7 +40,13 @@ FLATNESS_ROIS = {
 }
 
 class MVIBeamCheck():
-    
+    """
+    Perform output and beam-quality analysis on an RTIMAGE.
+
+    The analysis follows the ROI definitions described in the referenced
+    publications and uses machine-specific parameters supplied
+    through BeamCheckConfig.
+    """    
     # --- construction / interface --- 
     def __init__(self, rtimage: Dataset, config: dict) -> None:
         self.rtimage = rtimage
@@ -59,11 +68,23 @@ class MVIBeamCheck():
                 
     @classmethod
     def from_rtimage(cls, path: Path, config: dict) -> 'MVIBeamCheck':
+        """
+        Create an MVIBeamCheck instance from an RTIMAGE DICOM file.
+        """
         return cls(dcmread(path), config)
 
 
     # --- metadata / preprocessing ---
     def _get_timestamp(self) -> datetime:
+        """
+        Construct an acquisition timestamp from AcquisitionDate and
+        AcquisitionTime.
+
+        Raises
+        ------
+        ValueError
+            If either DICOM attribute is missing.
+        """
         acquisition_date = getattr(self.rtimage, 'AcquisitionDate', None)
         if acquisition_date is None:
             raise ValueError('Missing AcquisitionDate (required for timestamp)')
@@ -80,6 +101,12 @@ class MVIBeamCheck():
 
 
     def _compute_response_matrix(self) -> np.ndarray:
+        """
+        Convert pixel values to detector response.
+        
+        Response is computed using the vendor pixel factor stored in DICOM
+        tag (0021,1002). Vendor-masked saturated pixels are converted to NaN.
+        """
         pixel_array = self.rtimage.pixel_array
 
         tag = self.rtimage.get((0x0021, 0x1002))
@@ -97,11 +124,20 @@ class MVIBeamCheck():
 
     # --- ROI definition ---
     def _roi_offset_to_px(self, roi_offset_mm: tuple[float, float]) -> tuple[int, int]:
+        """
+        Convert an ROI offset in isocenter-plane millimetres to a pixel
+        location in the response matrix.
+    
+        Offsets are projected from isocenter to the imager plane using the
+        SAD and SID recorded in the RTIMAGE. The vendor-reported isocenter
+        pixel coordinates are converted from the vendor's (u,v) 1-based
+        convention to the internal (j,i) 0-based image convention.
+        """
 
         # --- isocenter pixel vendor (u, v, 1-based) → internal (j, i, 0-based) ---
         iso_u_vendor_px, iso_v_vendor_px = self.config.imager.mean_isocenter_pixel
-        iso_i_px = round(iso_v_vendor_px - 1)                                      # was int now round added
-        iso_j_px = round(iso_u_vendor_px - 1)                                      # was int now round added
+        iso_i_px = round(iso_v_vendor_px - 1)
+        iso_j_px = round(iso_u_vendor_px - 1)
     
         # --- pixel spacing (mm per pixel) ---
         pixel_spacing = getattr(self.rtimage, 'ImagePlanePixelSpacing', None)
@@ -125,8 +161,8 @@ class MVIBeamCheck():
         offset_u_mm, offset_v_mm = roi_offset_mm
     
         # --- convert mm → pixels  ---
-        offset_i_px = round((offset_v_mm * (SID_mm / SAD_mm)) / pixel_spacing_i)       # was int now round added
-        offset_j_px = round((offset_u_mm * (SID_mm / SAD_mm)) / pixel_spacing_j)       # was int now round added
+        offset_i_px = round((offset_v_mm * (SID_mm / SAD_mm)) / pixel_spacing_i)
+        offset_j_px = round((offset_u_mm * (SID_mm / SAD_mm)) / pixel_spacing_j)
     
         # --- ROI center in px ---
         roi_center_i_px = iso_i_px - offset_i_px
@@ -161,7 +197,7 @@ class MVIBeamCheck():
         """
         Measure the mean response within an ROI.
 
-        ROI responses are computed using numpy.mean(). Consequently, the presence
+        ROI responses are computed using np.mean(). Consequently, the presence
         of a NaN pixel within an ROI causes the ROI response to become NaN. While
         this is expected for intentionally vendor-masked regions, an unexpected
         NaN response may indicate a detector defect (e.g. a dead pixel) or another
@@ -198,6 +234,9 @@ class MVIBeamCheck():
 
     # --- results / API ---
     def result(self) -> BeamCheckResult:
+        """
+        Return the analysis results as a BeamCheckResult instance.
+        """
         return BeamCheckResult(
             timestamp = self.timestamp,
             output_response = float(self.output_response),
