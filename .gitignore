@@ -25,12 +25,13 @@ __pycache__/
 venv/
 .venv/
 
-# ---- Pytest ----
-.pytest_cache/
-
 # Python packaging
 *.egg-info/
-*.egg-info
+build/
+dist/
+
+# ---- Pytest ----
+.pytest_cache/
 
 # Paper
 _paper/

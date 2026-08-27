@@ -1,16 +1,31 @@
+[build-system]
+requires = ['setuptools']
+build-backend = 'setuptools.build_meta'
+
 [project]
-name = 'mvi_beamcheck'
-version = '0.0.1'
-requires-python = ">=3.11"
+name = 'mvi-beamcheck'
+
+version = '0.1.0'
+description = 'Imager-based beam output and X-ray quality measurements for a 1.5T MRI-linac'
+readme = 'README.md'
+requires-python = '>=3.12'
+license = 'MIT'
+
+authors = [
+    {name = 'Guido C. Hilgers'}
+]
 
 dependencies = [
     'pydicom>=3.0',
     'numpy>=2.4'
 ]
 
-[build-system]
-requires = ['setuptools']
-build-backend = 'setuptools.build_meta'
+[tool.setuptools]
+package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
-where = ['src']
+where = ["src"]
+
+[project.urls]
+repository =  'https://github.com/gchilgers/mvi_beamcheck'
+documentation = 'https://github.com/gchilgers/mvi_beamcheck/blob/master/README.md'

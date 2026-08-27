@@ -1,10 +1,5 @@
-"""
-Exposes the public API sho users can import MVIBeamCheck, BeamCheckCalibration, 
-and BeamCheckResult directly from mvi_beamcheck.
-"""
-
-
 from .beamcheck import MVIBeamCheck
-from .result import BeamCheckResult
+from .config import BeamCheckConfig
+from .results import BeamCheckResult
 
-__all__ = ["MVIBeamCheck", "BeamCheckResult"]
+__all__ = ["MVIBeamCheck", "BeamCheckConfig", "BeamCheckResult"]
