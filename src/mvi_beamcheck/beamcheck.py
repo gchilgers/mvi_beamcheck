@@ -100,8 +100,8 @@ class MVIBeamCheck():
 
         # --- isocenter pixel vendor (u, v, 1-based) → internal (j, i, 0-based) ---
         iso_u_vendor_px, iso_v_vendor_px = self.config.imager.mean_isocenter_pixel
-        iso_i_px = int(round(iso_v_vendor_px - 1))                                      # was int now round added
-        iso_j_px = int(round(iso_u_vendor_px - 1))                                      # was int now round added
+        iso_i_px = round(iso_v_vendor_px - 1)                                      # was int now round added
+        iso_j_px = round(iso_u_vendor_px - 1)                                      # was int now round added
     
         # --- pixel spacing (mm per pixel) ---
         pixel_spacing = getattr(self.rtimage, 'ImagePlanePixelSpacing', None)
@@ -125,8 +125,8 @@ class MVIBeamCheck():
         offset_u_mm, offset_v_mm = roi_offset_mm
     
         # --- convert mm → pixels  ---
-        offset_i_px = int(round((offset_v_mm * (SID_mm / SAD_mm)) / pixel_spacing_i))       # was int now round added
-        offset_j_px = int(round((offset_u_mm * (SID_mm / SAD_mm)) / pixel_spacing_j))       # was int now round added
+        offset_i_px = round((offset_v_mm * (SID_mm / SAD_mm)) / pixel_spacing_i)       # was int now round added
+        offset_j_px = round((offset_u_mm * (SID_mm / SAD_mm)) / pixel_spacing_j)       # was int now round added
     
         # --- ROI center in px ---
         roi_center_i_px = iso_i_px - offset_i_px

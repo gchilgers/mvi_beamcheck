@@ -13,7 +13,7 @@ target_output = 1.000000
 # Target output (cGy/MU)
 
 [beam_quality]
-reference_flatness = 0.945883
+reference_flatness = 0.9456
 # Reference flatness at the commissioned beam quality (-)
 
 beta = -1.23
