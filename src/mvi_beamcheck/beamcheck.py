@@ -39,7 +39,7 @@ FLATNESS_ROIS = {
     },
 }
 
-class MVIBeamCheck():
+class MVIBeamCheck:
     """
     Perform output and beam-quality analysis on an RTIMAGE.
 
