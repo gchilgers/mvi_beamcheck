@@ -29,6 +29,7 @@ venv/
 *.egg-info/
 build/
 dist/
+*.whl
 
 # ---- Pytest ----
 .pytest_cache/
