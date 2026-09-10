@@ -17,7 +17,8 @@ authors = [
 
 dependencies = [
     'pydicom>=3.0',
-    'numpy>=2.4'
+    'numpy>=2.4',
+    "pytest>=9.1.1",
 ]
 
 [tool.setuptools]
