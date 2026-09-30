@@ -1,7 +1,7 @@
 ## Overview
-A Python package for verifying beam output and X-ray beam quality on a 1.5 T MRI‑linac using the on-board megavoltage imager (MVI).
+A Python package for calculating beam output and X-ray beam quality of a 1.5 T MRI‑linac from images acquired with its on-board megavoltage imager (MVI).
 
-This repository implements methods for the analysis of MVI-based beam output and X-ray beam quality previously described in peer-reviewed work [1, 2] and reflects ongoing development toward a structured, reusable software package. It provides a transparent and configurable approach for consistent and reproducible analysis across systems, without requiring user-specific reimplementation.
+This repository implements methods for the calculation of MVI-based beam output and X-ray beam quality previously described in peer-reviewed work [1, 2] and reflects ongoing development toward a structured, reusable software package. It provides a transparent and configurable approach for consistent and reproducible analysis across systems, without requiring user-specific reimplementation.
 
 ## Quick start
 
