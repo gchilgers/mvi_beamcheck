@@ -9,7 +9,7 @@ version = "0.1.2"
 description = "Imager-based beam output and X-ray quality measurements for a 1.5T MRI-linac"
 readme = "README.md"
 requires-python = ">=3.12"
-license = "MIT"
+license = {text = "MIT"}
 
 authors = [
     {name = "Guido C. Hilgers"}
