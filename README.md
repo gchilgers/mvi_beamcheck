@@ -65,7 +65,7 @@ using the example configuration and compare the computed results against known
 reference values.
 
 
-## References:<br>
+## References<br>
 
 1.  [Hilgers et al., Phys Imaging Radiat Oncol, 2023;25:100411](https://doi.org/10.1016/j.phro.2023.100411).
 2.  [Hilgers et al., Phys Imaging Radiat Oncol, 2026;37:100930](https://doi.org/10.1016/j.phro.2026.100930).
