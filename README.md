@@ -1,9 +1,9 @@
 ## Overview
-A Python package for calculating beam output and X-ray beam quality of a 1.5 T MRI‑linac from images acquired with its on-board megavoltage imager (MVI).
-
-This repository implements methods for the calculation of MVI-based beam output and X-ray beam quality previously described in peer-reviewed work [1, 2] and reflects ongoing development toward a structured, reusable software package. It provides a transparent and configurable approach for consistent and reproducible analysis across systems, without requiring user-specific reimplementation.
+A Python package for calculating beam output and X-ray beam quality of a 1.5 T MRI-linac from images acquired with its on-board megavoltage imager (MVI) [1, 2].
 
 ## Quick start
+Install the latest release: `pip install git+https://github.com/gchilgers/mvi_beamcheck.git@v0.1.3`.  
+A complete working example is provided in `src/mvi_beamcheck/examples/basic_usage.py`.
 
 ## Configuration
 MVIBeamCheck requires a machine-specific configuration file containing the parameters for output and X-ray beam quality calculations. Users should create their own based on `example.toml`. 
@@ -66,8 +66,9 @@ reference values.
 
 
 ## References:<br>
-1.  Hilgers et al. (2023) - https://doi.org/10.1016/j.phro.2023.100411
-2.  Hilgers et al. (2026) - https://doi.org/10.1016/j.phro.2026.100930
+
+1.  [Hilgers et al., Phys Imaging Radiat Oncol, 2023;25:100411](https://doi.org/10.1016/j.phro.2023.100411).
+2.  [Hilgers et al., Phys Imaging Radiat Oncol, 2026;37:100930](https://doi.org/10.1016/j.phro.2026.100930).
 
 ## Disclaimer
 
