@@ -44,12 +44,12 @@ For each ROI, the response is calculated as the arithmetic mean of the individua
 
 ## Test suite
 
-The test suite (`/tests`) combines unit and integration tests to verify configuration parsing, formula implementations, end-to-end processing, and ROI geometry.
+The test suite (`tests/`) combines unit and integration tests to verify configuration parsing, formula implementations, end-to-end processing, and ROI geometry.
 
 
 ### Configuration parsing
 
-The example configuration (`/config/example.toml`) is validated by verifying that it can be parsed into a `BeamCheckConfig` dataclass.
+The example configuration (`config/example.toml`) is validated by verifying that it can be parsed into a `BeamCheckConfig` dataclass.
 
 ### Formula implementations
 
@@ -57,11 +57,11 @@ The formula implementations for calculating the output deviation, flatness, and 
 
 ### Flatness ROI geometry
 
-Flatness ROI geometry tests use a synthetic RTIMAGE test pattern (`/tests/data/rtimg_test_pattern.dcm`) to verify the placement and dimensions of the central and off-axis flatness ROIs.
+Flatness ROI geometry tests use a synthetic RTIMAGE test pattern (`tests/data/rtimg_test_pattern.dcm`) to verify the placement and dimensions of the central and off-axis flatness ROIs.
 
 ### End-to-end pipeline
 
-Pipeline tests process a representative RTIMAGE (`/tests/data/rtimg_example_anon.dcm`)
+Pipeline tests process a representative RTIMAGE (`tests/data/rtimg_example_anon.dcm`)
 using the example configuration and compare the computed results against known
 reference values.
 
