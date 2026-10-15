@@ -3,7 +3,7 @@ A Python package for calculating beam output and X-ray beam quality of a 1.5 T M
 
 ## Quick start
 Install the latest release: `pip install git+https://github.com/gchilgers/mvi_beamcheck.git@v0.1.3`.  
-A complete working example is provided in `src/mvi_beamcheck/examples/basic_usage.py`.
+A complete working example is provided in `/examples/basic_usage.py`.
 
 ## Configuration
 MVIBeamCheck requires a machine-specific configuration file containing the parameters for output and X-ray beam quality calculations. Users should create their own based on `example.toml`. 
@@ -44,11 +44,12 @@ For each ROI, the response is calculated as the arithmetic mean of the individua
 
 ## Test suite
 
-The test suite combines unit and integration tests to verify configuration parsing, formula implementations, end-to-end processing, and ROI geometry.
+The test suite (`/tests`) combines unit and integration tests to verify configuration parsing, formula implementations, end-to-end processing, and ROI geometry.
+
 
 ### Configuration parsing
 
-The example configuration (`config/example.toml`) is validated by verifying that it can be parsed into a `BeamCheckConfig` dataclass.
+The example configuration (`/config/example.toml`) is validated by verifying that it can be parsed into a `BeamCheckConfig` dataclass.
 
 ### Formula implementations
 
@@ -56,11 +57,11 @@ The formula implementations for calculating the output deviation, flatness, and 
 
 ### Flatness ROI geometry
 
-Flatness ROI geometry tests use a synthetic RTIMAGE test pattern (`rtimg_test_pattern.dcm`) to verify the placement and dimensions of the central and off-axis flatness ROIs.
+Flatness ROI geometry tests use a synthetic RTIMAGE test pattern (`/tests/data/rtimg_test_pattern.dcm`) to verify the placement and dimensions of the central and off-axis flatness ROIs.
 
 ### End-to-end pipeline
 
-Pipeline tests process a representative RTIMAGE (`rtimg_example_anon.dcm`)
+Pipeline tests process a representative RTIMAGE (`/tests/data/rtimg_example_anon.dcm`)
 using the example configuration and compare the computed results against known
 reference values.
 
@@ -72,4 +73,4 @@ reference values.
 
 ## Disclaimer
 
-This software is intended for research and quality assurance purposes. It has not been validated as a medical device and is not intended to be used as the sole basis for decisions affecting clinical use of the system.
+This software is intended for research purposes. It has not been validated as a medical device and is not intended to be used  for decisions affecting clinical use of the system.
